@@ -2,7 +2,7 @@ import os
 
 from setuptools import find_packages, setup
 
-with open(os.path.join(os.path.dirname(__file__), "README.rst")) as readme:
+with open(os.path.join(os.path.dirname(__file__), "README.md")) as readme:
     README = readme.read()
 
 os.chdir(os.path.normpath(os.path.join(__file__, os.pardir)))
@@ -18,6 +18,7 @@ setup(
                    core
                    pagination module. (aka no need to rewrite code!)""",
     long_description=README,
+    long_description_content_type="text/markdown",
     license="BSD",
     packages=find_packages(),
     install_requires=["Django>=3.2"],
