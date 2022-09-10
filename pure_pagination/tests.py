@@ -1,14 +1,16 @@
 from datetime import datetime
-from pure_pagination import paginator as pagination_module
-from pure_pagination import Paginator, InvalidPage, EmptyPage
-from django.test import TestCase
+
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible, force_text
+from django.test import TestCase
+from django.utils.encoding import force_str, python_2_unicode_compatible
+
+from pure_pagination import EmptyPage, InvalidPage, Paginator
+from pure_pagination import paginator as pagination_module
 
 
 @python_2_unicode_compatible
 class Article(models.Model):
-    headline = models.CharField(max_length=100, default='Default headline')
+    headline = models.CharField(max_length=100, default="Default headline")
     pub_date = models.DateTimeField()
 
     def __str__(self):
@@ -29,8 +31,7 @@ class PaginationTests(TestCase):
     def setUp(self):
         # Prepare a list of objects for pagination.
         for x in range(1, 10):
-            a = Article(headline='Article %s' % x,
-                        pub_date=datetime(2005, 7, 29))
+            a = Article(headline=f"Article {x}", pub_date=datetime(2005, 7, 29))
             a.save()
 
     def test_paginator(self):
@@ -42,14 +43,18 @@ class PaginationTests(TestCase):
     def test_first_page(self):
         paginator = Paginator(Article.objects.all(), 5)
         p = paginator.page(1)
-        self.assertEqual("<Page 1 of 2>", force_text(p))
-        self.assertQuerysetEqual(p.object_list,
-                                 ["<Article: Article 1>",
-                                  "<Article: Article 2>",
-                                  "<Article: Article 3>",
-                                  "<Article: Article 4>",
-                                  "<Article: Article 5>"],
-                                 ordered=False)
+        self.assertEqual("<Page 1 of 2>", force_str(p))
+        self.assertQuerysetEqual(
+            p.object_list,
+            [
+                "<Article: Article 1>",
+                "<Article: Article 2>",
+                "<Article: Article 3>",
+                "<Article: Article 4>",
+                "<Article: Article 5>",
+            ],
+            ordered=False,
+        )
         self.assertTrue(p.has_next())
         self.assertFalse(p.has_previous())
         self.assertTrue(p.has_other_pages())
@@ -61,13 +66,12 @@ class PaginationTests(TestCase):
     def test_last_page(self):
         paginator = Paginator(Article.objects.all(), 5)
         p = paginator.page(2)
-        self.assertEqual("<Page 2 of 2>", force_text(p))
-        self.assertQuerysetEqual(p.object_list,
-                                 ["<Article: Article 6>",
-                                  "<Article: Article 7>",
-                                  "<Article: Article 8>",
-                                  "<Article: Article 9>"],
-                                 ordered=False)
+        self.assertEqual("<Page 2 of 2>", force_str(p))
+        self.assertQuerysetEqual(
+            p.object_list,
+            ["<Article: Article 6>", "<Article: Article 7>", "<Article: Article 8>", "<Article: Article 9>"],
+            ordered=False,
+        )
         self.assertFalse(p.has_next())
         self.assertTrue(p.has_previous())
         self.assertTrue(p.has_other_pages())
@@ -82,15 +86,13 @@ class PaginationTests(TestCase):
         self.assertRaises(EmptyPage, paginator.page, 3)
 
         # Empty paginators with allow_empty_first_page=True.
-        paginator = Paginator(Article.objects.filter(id=0), 5,
-                              allow_empty_first_page=True)
+        paginator = Paginator(Article.objects.filter(id=0), 5, allow_empty_first_page=True)
         self.assertEqual(0, paginator.count)
         self.assertEqual(1, paginator.num_pages)
         self.assertEqual([1], list(paginator.page_range))
 
         # Empty paginators with allow_empty_first_page=False.
-        paginator = Paginator(Article.objects.filter(id=0), 5,
-                              allow_empty_first_page=False)
+        paginator = Paginator(Article.objects.filter(id=0), 5, allow_empty_first_page=False)
         self.assertEqual(0, paginator.count)
         self.assertEqual(0, paginator.num_pages)
         self.assertEqual([], list(paginator.page_range))
@@ -103,14 +105,13 @@ class PaginationTests(TestCase):
         pagination_module.SHOW_FIRST_PAGE_WHEN_INVALID = True
         paginator = Paginator(Article.objects.all(), 5)
         p = paginator.page(7)
-        self.assertEqual("<Page 1 of 2>", force_text(p))
+        self.assertEqual("<Page 1 of 2>", force_str(p))
         pagination_module.SHOW_FIRST_PAGE_WHEN_INVALID = False
 
     def test_orphans(self):
         # Add a few more records to test out the orphans feature.
         for x in range(10, 13):
-            Article(headline="Article %s" % x,
-                    pub_date=datetime(2006, 10, 6)).save()
+            Article(headline=f"Article {x}", pub_date=datetime(2006, 10, 6)).save()
 
         # With orphans set to 3 and 10 items per page, we should get all 12 items on a single page.
         paginator = Paginator(Article.objects.all(), 10, orphans=3)
@@ -127,7 +128,7 @@ class PaginationTests(TestCase):
         self.assertEqual(2, paginator.num_pages)
         self.assertEqual([1, 2], list(paginator.page_range))
         p = paginator.page(1)
-        self.assertEqual("<Page 1 of 2>", force_text(p))
+        self.assertEqual("<Page 1 of 2>", force_str(p))
         self.assertEqual([1, 2, 3, 4, 5], p.object_list)
         self.assertTrue(p.has_next())
         self.assertFalse(p.has_previous())
