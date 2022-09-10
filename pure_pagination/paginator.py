@@ -15,7 +15,7 @@ MARGIN_PAGES_DISPLAYED = PAGINATION_SETTINGS.get("MARGIN_PAGES_DISPLAYED", 2)
 SHOW_FIRST_PAGE_WHEN_INVALID = PAGINATION_SETTINGS.get("SHOW_FIRST_PAGE_WHEN_INVALID", False)
 
 
-class Paginator(object):
+class Paginator:
     def __init__(self, object_list, per_page, orphans=0, allow_empty_first_page=True, request=None):
         self.object_list = object_list
         self.per_page = per_page
@@ -102,7 +102,7 @@ def add_page_querystring(func):
         if isinstance(result, int):
             querystring = self._other_page_querystring(result)
             return PageRepresentation(result, querystring)
-        elif isinstance(result, collections.Iterable):
+        elif isinstance(result, collections.abc.Iterable):
             new_result = []
             for number in result:
                 if isinstance(number, int):
@@ -116,7 +116,7 @@ def add_page_querystring(func):
     return wrapper
 
 
-class Page(object):
+class Page:
     def __init__(self, object_list, number, paginator):
         self.object_list = object_list
         self.paginator = paginator
@@ -129,7 +129,7 @@ class Page(object):
         self.number = PageRepresentation(number, self._other_page_querystring(number))
 
     def __repr__(self):
-        return '<Page %s of %s>' % (self.number, self.paginator.num_pages)
+        return f'<Page {self.number} of {self.paginator.num_pages}>'
 
     def has_next(self):
         return self.number < self.paginator.num_pages

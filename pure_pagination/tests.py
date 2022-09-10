@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 from datetime import datetime
 from pure_pagination import paginator as pagination_module
 from pure_pagination import Paginator, InvalidPage, EmptyPage
@@ -17,12 +15,12 @@ class Article(models.Model):
         return self.headline
 
 
-class CountContainer(object):
+class CountContainer:
     def count(self):
         return 42
 
 
-class LenContainer(object):
+class LenContainer:
     def __len__(self):
         return 42
 
