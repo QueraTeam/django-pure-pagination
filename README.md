@@ -1,7 +1,5 @@
 # django-pure-pagination
 
-[![image](https://travis-ci.org/jamespacileo/django-pure-pagination.svg?branch=master)](https://travis-ci.org/jamespacileo/django-pure-pagination)
-
 ## Description
 
 django-pure-pagination provides advanced pagination features and is
