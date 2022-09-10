@@ -20,6 +20,7 @@ setup(
     long_description=README,
     license="BSD",
     packages=find_packages(),
+    install_requires=["Django>=3.2"],
     include_package_data=True,
     zip_safe=False,
     keywords="pagination, django",

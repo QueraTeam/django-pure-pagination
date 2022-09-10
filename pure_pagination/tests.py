@@ -2,13 +2,12 @@ from datetime import datetime
 
 from django.db import models
 from django.test import TestCase
-from django.utils.encoding import force_str, python_2_unicode_compatible
+from django.utils.encoding import force_str
 
-from pure_pagination import EmptyPage, InvalidPage, Paginator
-from pure_pagination import paginator as pagination_module
+from . import EmptyPage, InvalidPage, Paginator
+from . import paginator as pagination_module
 
 
-@python_2_unicode_compatible
 class Article(models.Model):
     headline = models.CharField(max_length=100, default="Default headline")
     pub_date = models.DateTimeField()

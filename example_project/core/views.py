@@ -3,7 +3,7 @@ from random import randint
 
 from core.names import names
 from django.http import Http404
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 
 from pure_pagination.paginator import Paginator
 
@@ -26,7 +26,8 @@ def index(request):
     p = Paginator(selected_names, page_size, request=request)
 
     page = p.page(page_num)
-    return render_to_response(
+    return render(
+        request,
         "index.html",
         {
             "page": page,
